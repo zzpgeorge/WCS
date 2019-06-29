@@ -54,6 +54,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Socket\AsyncTcpClient.cs" />
+    <Compile Include="Socket\AsyncTcpServer.cs" />
+    <Compile Include="Socket\ClientMaster.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
