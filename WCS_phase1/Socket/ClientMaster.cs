@@ -66,17 +66,43 @@ namespace AsyncTcp
         /// </summary>
         /// <param name="name"></param>
         /// <param name="data"></param>
-        internal static void UpdateDevceData(string name, byte[] data)
+        internal static void UpdateDevceBData(string name, byte[] data)
         {
 
             Device device = devices.Find(c => { return name.Equals(c.Name); });
             if (device != null)
             {
                 device.Bdata = data;
+                device.UpDateTime = DateTime.Now;
             }
             else
             {
-                devices.Add(new Device(name, data));
+                devices.Add(new Device(name, data,DateTime.Now));
+            }
+            lock (_uobj)
+            {
+                _devices.Clear();
+                _devices.AddRange(devices);
+            }
+        }       
+        
+        /// <summary>
+        /// 更新设备信息
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="data"></param>
+        internal static void UpdateDevceSData(string name, string data)
+        {
+
+            Device device = devices.Find(c => { return name.Equals(c.Name); });
+            if (device != null)
+            {
+                device.Sdata = data;
+                device.UpDateTime = DateTime.Now;
+            }
+            else
+            {
+                devices.Add(new Device(name, data,DateTime.Now));
             }
             lock (_uobj)
             {
@@ -114,12 +140,22 @@ namespace AsyncTcp
     public class Device
     {
         internal string Name;
-        internal byte[] Bdata;
+        internal byte[] Bdata;//字节数据
+        internal string Sdata;//字符串数据
+        internal DateTime UpDateTime;
 
-        public Device(string name, byte[] data)
+        public Device(string name, string sdata,DateTime datetime)
+        {
+            this.Name = name;
+            this.Sdata = sdata;
+            this.UpDateTime = datetime;
+        }
+
+        public Device(string name, byte[] data,DateTime datetime)
         {
             this.Name = name;
             this.Bdata = data;
+            this.UpDateTime = datetime;
         }
     }
 
@@ -168,7 +204,7 @@ namespace AsyncTcp
         {
             client = new AsyncTcpClient(IPAddress.Parse(IP), Port);
             client.ServerConnected += Client_ServerConnected;//连接成功
-            //client.PlaintextReceived += Client_PlaintextReceived; 文本接收
+            client.PlaintextReceived += Client_PlaintextReceived; //文本接收
             client.DatagramReceived += Client_DatagramReceived; //字节接收
             client.ServerDisconnected += Client_ServerDisconnected;//断开连接
             client.ServerExceptionOccurred += Client_ServerExceptionOccurred;//
@@ -217,7 +253,7 @@ namespace AsyncTcp
         {
             //throw new NotImplementedException();
             Console.WriteLine(System.Text.Encoding.ASCII.GetString(e.Datagram));
-            ClinetMaster.UpdateDevceData(Name, e.Datagram);
+            ClinetMaster.UpdateDevceBData(Name, e.Datagram);
         }
 
         /// <summary>
@@ -229,6 +265,7 @@ namespace AsyncTcp
         {
             // throw new NotImplementedException();
             Console.WriteLine(e.Datagram);
+            ClinetMaster.UpdateDevceSData(Name, e.Datagram);
         }
 
         /// <summary>

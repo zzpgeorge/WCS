@@ -300,7 +300,7 @@ namespace AsyncTcp
                 byte[] receivedBytes = new byte[numberOfReadBytes];
                 Buffer.BlockCopy(buffer, 0, receivedBytes, 0, numberOfReadBytes);
                 RaiseDatagramReceived(tcpClient, receivedBytes);
-                //RaisePlaintextReceived(tcpClient, receivedBytes);
+                RaisePlaintextReceived(tcpClient, receivedBytes);
 
                 // then start reading from the network again
                 stream.BeginRead(
@@ -323,7 +323,7 @@ namespace AsyncTcp
         /// <summary>
         /// 接收到数据报文明文事件
         /// </summary>
-        //public event EventHandler<TcpDatagramReceivedEventArgs<string>> PlaintextReceived;
+        public event EventHandler<TcpDatagramReceivedEventArgs<string>> PlaintextReceived;
 
 
         /// <summary>
@@ -341,13 +341,13 @@ namespace AsyncTcp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="datagram"></param>
-        //private void RaisePlaintextReceived(TcpClient sender, byte[] datagram)
-        //{
-        //    PlaintextReceived?.Invoke(this,
-        //        new TcpDatagramReceivedEventArgs<string>(sender, 
-        //                this.Encoding.GetString(datagram, 0, datagram.Length))
-        //        );
-        //}
+        private void RaisePlaintextReceived(TcpClient sender, byte[] datagram)
+        {
+            PlaintextReceived?.Invoke(this,
+                new TcpDatagramReceivedEventArgs<string>(sender,
+                        this.Encoding.GetString(datagram, 0, datagram.Length))
+                );
+        }
 
         /// <summary>
         /// 与服务器的连接已建立事件
