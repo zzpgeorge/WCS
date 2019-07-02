@@ -57,6 +57,7 @@
     <Compile Include="Socket\AsyncTcpClient.cs" />
     <Compile Include="Socket\AsyncTcpServer.cs" />
     <Compile Include="Socket\ClientMaster.cs" />
+    <Compile Include="Socket\Sample.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
