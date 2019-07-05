@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2047
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WCS", "WCS_phase1\WCS.csproj", "{1D4E5334-175A-4BD7-9844-27530CDCD41B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WCS_phase1", "WCS_phase1\WCS_phase1.csproj", "{1D4E5334-175A-4BD7-9844-27530CDCD41B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

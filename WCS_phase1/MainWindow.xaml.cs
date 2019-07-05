@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WCS_phase1.TaskAction;
 
 namespace WCS_phase1
 {
@@ -23,6 +24,12 @@ namespace WCS_phase1
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void BtnTask_Click(object sender, RoutedEventArgs e)
+        {
+            TaskControl taskControl = new TaskControl();
+            taskControl.Run_In();
         }
     }
 }
