@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="MySql.Data, Version=8.0.16.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,15 +63,18 @@
     <Compile Include="Devices\RGV.cs" />
     <Compile Include="Functions\DataTableExtend.cs" />
     <Compile Include="Functions\SimpleTools.cs" />
-    <Compile Include="Models\Device.cs" />
+    <Compile Include="Functions\TaskTools.cs" />
+    <Compile Include="Models\ConstantValues.cs" />
     <Compile Include="Models\MySQL.cs" />
-    <Compile Include="Models\TaskInfo.cs" />
-    <Compile Include="Models\TaskItem.cs" />
-    <Compile Include="Models\WCSCommand.cs" />
+    <Compile Include="Models\WCS_COMMAND_MASTER.cs" />
+    <Compile Include="Models\WCS_COMMAND_V.cs" />
+    <Compile Include="Models\WCS_CONFIG_DEVICE.cs" />
+    <Compile Include="Models\WCS_TASK_INFO.cs" />
+    <Compile Include="Models\WCS_TASK_ITEM.cs" />
     <Compile Include="Socket\AsyncTcpClient.cs" />
     <Compile Include="Socket\AsyncTcpServer.cs" />
     <Compile Include="Socket\ClientMaster.cs" />
-    <Compile Include="TaskAction\TaskControl.cs" />
+    <Compile Include="Action\TaskControl.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

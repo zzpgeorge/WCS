@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace WCS_phase1.Models
 {
     /// <summary>
-    /// WCS任务指令总控
+    /// WCS指令资讯     WCS_TASK_ITEM
     /// </summary>
-    public class WCSCommand
+    public class WCS_TASK_ITEM
     {
         /// <summary>
         /// WCS单号
@@ -17,29 +17,29 @@ namespace WCS_phase1.Models
         public String WCS_NO { get; set; }
 
         /// <summary>
-        /// WCS单号
+        /// 项目ID
         /// </summary>
-        public String WCS_TYPE { get; set; }
+        public String ITEM_ID { get; set; }
 
         /// <summary>
-        /// 任务UID_1
+        /// 设备
         /// </summary>
-        public String TASK_UID_1 { get; set; }
+        public String DEVICE { get; set; }
 
         /// <summary>
-        /// 任务UID_2
+        /// 启动位置
         /// </summary>
-        public String TASK_UID_2 { get; set; }
+        public String LOC_FROM { get; set; }
 
         /// <summary>
-        /// 固定辊台位置
+        /// 目的位置
         /// </summary>
-        public String FR_LOC { get; set; }
+        public String LOC_TO { get; set; }
 
         /// <summary>
-        /// 步骤
+        /// 任务状态
         /// </summary>
-        public String STEP { get; set; }
+        public String STATUS { get; set; }
 
         /// <summary>
         /// 创建时间

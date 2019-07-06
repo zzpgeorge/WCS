@@ -8,9 +8,9 @@ using System.Data;
 namespace WCS_phase1.Models
 {
     /// <summary>
-    /// 设备资讯
+    /// 设备资讯    WCS_CONFIG_DEVICE
     /// </summary>
-    public class Device
+    public class WCS_CONFIG_DEVICE
     {
         /// <summary>
         /// 设备

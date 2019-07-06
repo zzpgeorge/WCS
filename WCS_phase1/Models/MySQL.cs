@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 using MySql.Data.MySqlClient;
 using System.Data;
+using System.Configuration;
 
 namespace WCS_phase1.Models
 {
     class MySQL
     {
-        static String conn = "server=localhost;database=wcs;uid=root;pwd=kd123;SslMode=None";
+        static readonly String conn = ConfigurationManager.AppSettings["MySqlConn"];
 
         /// <summary>
         /// 获取所有字段数据

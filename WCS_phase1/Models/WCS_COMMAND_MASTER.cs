@@ -7,39 +7,34 @@ using System.Threading.Tasks;
 namespace WCS_phase1.Models
 {
     /// <summary>
-    /// 总任务资讯
+    /// WCS任务指令总控   WCS_COMMAND_MASTER
     /// </summary>
-    public class TaskInfo
+    public class WCS_COMMAND_MASTER
     {
         /// <summary>
-        /// 任务UID
+        /// WCS单号
         /// </summary>
-        public String TASK_UID { get; set; }
+        public String WCS_NO { get; set; }
+        
+        /// <summary>
+        /// 任务UID_1
+        /// </summary>
+        public String TASK_UID_1 { get; set; }
 
         /// <summary>
-        /// 任务类型
+        /// 任务UID_2
         /// </summary>
-        public String TASK_TYPE { get; set; }
+        public String TASK_UID_2 { get; set; }
 
         /// <summary>
-        /// 货物码
+        /// 固定辊台位置
         /// </summary>
-        public String BARCODE { get; set; }
+        public String FR_LOC { get; set; }
 
         /// <summary>
-        /// 来源货位
+        /// 步骤
         /// </summary>
-        public String W_S_LOC { get; set; }
-
-        /// <summary>
-        /// 目标货位
-        /// </summary>
-        public String W_D_LOC { get; set; }
-
-        /// <summary>
-        /// 站点
-        /// </summary>
-        public String SITE { get; set; }
+        public String STEP { get; set; }
 
         /// <summary>
         /// 创建时间

@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WCS_phase1.TaskAction;
+using WCS_phase1.Action;
 
 namespace WCS_phase1
 {
@@ -29,7 +29,7 @@ namespace WCS_phase1
         private void BtnTask_Click(object sender, RoutedEventArgs e)
         {
             TaskControl taskControl = new TaskControl();
-            taskControl.Run_In();
+            taskControl.Run_In_Initial();
         }
     }
 }
