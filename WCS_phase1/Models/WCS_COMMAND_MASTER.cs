@@ -46,4 +46,15 @@ namespace WCS_phase1.Models
         /// </summary>
         public DateTime? UPDATE_TIME { get; set; }
     }
+
+    /// <summary>
+    /// Command状态
+    /// </summary>
+    public class CommandStep
+    {
+        public static String 生成单号 = "1";
+        public static String 请求执行 = "2";
+        public static String 执行中 = "3";
+        public static String 结束 = "4";
+    }
 }

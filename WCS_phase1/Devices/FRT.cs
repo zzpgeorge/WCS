@@ -12,12 +12,13 @@ namespace WCS_phase1.Devices
     public class FRT
     {
         #region 需求功能
+        //判断辊台是否存在货物
 
-        //正向启动单滚棒
-        //正向启动双滚棒
+        //入库启动单滚棒
+        //入库启动双滚棒
 
-        //反向启动单滚棒
-        //反向启动双滚棒
+        //出库启动单滚棒
+        //出库启动双滚棒
 
         #endregion
     }

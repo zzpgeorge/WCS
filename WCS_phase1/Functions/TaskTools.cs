@@ -65,11 +65,73 @@ namespace WCS_phase1.Functions
         /// </summary>
         /// <param name="step"></param>
         /// <param name="wcs_no"></param>
-        public void UpdateStep(String wcs_no, String step)
+        public void UpdateCommand(String wcs_no, String step)
         {
             try
             {
-                mySQL.ExcuteSql(String.Format(@"update WCS_COMMAND_MASTER set STEP = '{0}',UPDATE_TIME = NOW() where WCS_NO = '{1}'", step, wcs_no));
+                String sql = String.Format(@"update WCS_COMMAND_MASTER set STEP = '{0}',UPDATE_TIME = NOW() where WCS_NO = '{1}'", step, wcs_no);
+                mySQL.ExcuteSql(sql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 更新 TASK 状态 By TASK_UID [N:未执行,W:任务中,Y:完成,X:失效]
+        /// </summary>
+        /// <param name="task_uid"></param>
+        /// <param name="site"></param>
+        public void UpdateTask(String task_uid, String site)
+        {
+            try
+            {
+                String sql = String.Format(@"update WCS_TASK_INFO set SITE = '{0}',UPDATE_TIME = NOW() where TASK_UID = '{0}'", site, task_uid);
+                mySQL.ExcuteSql(sql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 更新 TASK 状态 By WCS_NO [N:未执行,W:任务中,Y:完成,X:失效]
+        /// </summary>
+        /// <param name="wcs_no"></param>
+        /// <param name="site"></param>
+        public void UpdateTaskByWCSNo(String wcs_no, String site)
+        {
+            try
+            {
+                String sql = String.Format(@"update WCS_TASK_INFO set SITE = '{0}',UPDATE_TIME = NOW()
+                                              where TASK_UID in (select TASK_UID_1 from WCS_COMMAND_MASTER where WCS_NO = '{1}')
+                                                 or TASK_UID in (select TASK_UID_2 from WCS_COMMAND_MASTER where WCS_NO = '{1}')", site, wcs_no);
+                mySQL.ExcuteSql(sql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 更新 ITEM 明细：
+        /// 设备编号(key = DEVICE)；
+        /// 来源位置(key = LOC_FROM)；
+        /// 作业状态(key = STATUS)[value = N:不可执行,Q:请求执行,W:任务中,X:失效,R:交接,E:出现异常,Y:完成任务]
+        /// </summary>
+        /// <param name="wcs_no"></param>
+        /// <param name="item_id"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void UpdateItem(String wcs_no, String item_id, String key, String value)
+        {
+            try
+            {
+                String sql = String.Format(@"update WCS_TASK_ITEM set {0} = '{1}',UPDATE_TIME = NOW() where WCS_NO = '{2}' and ITEM_ID = '{3}'", key, value, wcs_no, item_id);
+                mySQL.ExcuteSql(sql);
             }
             catch (Exception ex)
             {

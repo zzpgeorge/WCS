@@ -51,4 +51,48 @@ namespace WCS_phase1.Models
         /// </summary>
         public DateTime? UPDATE_TIME { get; set; }
     }
+
+    /// <summary>
+    /// Item作业ID
+    /// </summary>
+    public class ItemId
+    {
+        public static String 固摆滚棒 = "111";
+        public static String 摆运滚棒 = "112";
+        public static String 运运滚棒 = "113";
+
+        public static String 摆渡车定位 = "011";
+
+        public static String 运输车定位 = "021";
+        public static String 运输车复位1 = "022";
+        public static String 运输车复位2 = "023";
+
+        public static String 行车定位 = "031";
+        public static String 行车取货 = "032";
+        public static String 行车放货 = "033";
+    }
+
+    /// <summary>
+    /// Item状态
+    /// </summary>
+    public class ItemStatus
+    {
+        public static String 不可执行 = "N";
+        public static String 请求执行 = "Q";
+        public static String 任务中 = "W";
+        public static String 失效 = "X";
+        public static String 交接 = "R";
+        public static String 出现异常 = "E";
+        public static String 完成任务 = "Y";
+    }
+
+    /// <summary>
+    /// Item列名
+    /// </summary>
+    public class ItemColumnName
+    {
+        public static String 设备编号 = "DEVICE";
+        public static String 来源位置 = "LOC_FROM";
+        public static String 作业状态 = "STATUS";
+    }
 }

@@ -21,6 +21,7 @@ namespace WCS_phase1.Devices
         //反向启动单滚棒
         //反向启动双滚棒
 
+        //根据当前固定辊台位置寻找摆渡车
         #endregion
     }
 }

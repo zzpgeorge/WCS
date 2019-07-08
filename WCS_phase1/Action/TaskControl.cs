@@ -54,22 +54,25 @@ namespace WCS_phase1.Action
             {
                 // 摆渡车到固定辊台对接点
                 String ARFloc = task.GetARFLoc(command.FRT);    //获取对应摆渡车位置
-                task.CreateTask(command.WCS_NO, ConstantValues.摆渡车定位, ARFloc);  //生成摆渡车任务
+                task.CreateTask(command.WCS_NO, ItemId.摆渡车定位, ARFloc);  //生成摆渡车任务
 
                 // 运输车到摆渡车对接点
-                task.CreateTask(command.WCS_NO, ConstantValues.运输车复位1, ConfigurationManager.AppSettings["StandbyP1"]);  //生成运输车任务
+                task.CreateTask(command.WCS_NO, ItemId.运输车复位1, ConfigurationManager.AppSettings["StandbyP1"]);  //生成运输车任务
 
                 // 行车到运输车对接取货点
                 String ABCloc = task.GetABCTrackLoc(command.LOC_1);     //获取对应行车位置
-                task.CreateTask(command.WCS_NO, ConstantValues.行车定位, ABCloc);     //生成行车任务
+                task.CreateTask(command.WCS_NO, ItemId.行车定位, ABCloc);     //生成行车任务
 
                 //更新WCS COMMAND状态——执行中
-                task.UpdateStep(command.WCS_NO, "3");
+                task.UpdateCommand(command.WCS_NO, CommandStep.执行中);
+                //更新WCS TASK状态——任务中
+                task.UpdateTaskByWCSNo(command.WCS_NO, TaskSite.任务中);
             }
             catch (Exception ex)
             {
-                //发生异常初始化资讯
-                task.UpdateStep(command.WCS_NO, "2");
+                //初始化
+                task.UpdateCommand(command.WCS_NO, CommandStep.请求执行);
+                task.UpdateTaskByWCSNo(command.WCS_NO, TaskSite.未执行);
                 task.DeleteTask(command.WCS_NO, "");
                 throw ex;
             }
@@ -80,9 +83,11 @@ namespace WCS_phase1.Action
 
         #endregion
 
-        #region 读写设备
+
+
+        #region 对接设备
         /// <summary>
-        /// 分配设备任务&下发设备指令
+        /// 读写设备
         /// </summary>
         public void RWDevice()
         {
@@ -95,10 +100,11 @@ namespace WCS_phase1.Action
                     return;
                 }
                 List<WCS_TASK_ITEM> itemList = dtitem.ToDataList<WCS_TASK_ITEM>();
-                // 遍历分配设备
+                // 遍历分配设备&下发指令
                 foreach (WCS_TASK_ITEM item in itemList)
                 {
                     ReadDevice(item);
+                    WriteDevice(item);
                 }
             }
             catch (Exception ex)
@@ -108,7 +114,7 @@ namespace WCS_phase1.Action
         }
 
         /// <summary>
-        /// 分配设备
+        /// 分配任务设备
         /// </summary>
         /// <param name="item"></param>
         public void ReadDevice(WCS_TASK_ITEM item)
@@ -117,21 +123,110 @@ namespace WCS_phase1.Action
             {
                 switch (item.ITEM_ID.Substring(0, 2))
                 {
-                    case "01":  //摆渡车
-                        //获取所有摆渡车状态
-                        //计算位置允许范围
-                        //判断是否需要移动位置
-                        //确认设备
+                    case "01":
+                        #region 摆渡车
+                        // =>根据任务讯息获取位置允许范围可用设备
+
+                        // =>确认设备
+
                         //更新状态
-                        //下发指令
+                        task.UpdateItem(item.WCS_NO, item.ITEM_ID, ItemColumnName.作业状态, ItemStatus.请求执行);
+                        #endregion
                         break;
-                    case "02":  //运输车
+                    case "02":
+                        #region 运输车
+                        // =>根据任务讯息获取位置允许范围可用设备
+
+                        // =>确认设备
+
+                        //更新状态
+                        task.UpdateItem(item.WCS_NO, item.ITEM_ID, ItemColumnName.作业状态, ItemStatus.请求执行);
+                        #endregion
                         break;
-                    case "03":  //行车
+                    case "03":
+                        #region 行车
+                        // =>根据任务讯息获取位置允许范围可用设备
+
+                        // =>确认设备
+
+                        //更新状态
+                        task.UpdateItem(item.WCS_NO, item.ITEM_ID, ItemColumnName.作业状态, ItemStatus.请求执行);
+                        #endregion
                         break;
                     default:
                         break;
                 }
+            }
+            catch (Exception ex)
+            {
+                //初始化
+                task.UpdateItem(item.WCS_NO, item.ITEM_ID, ItemColumnName.作业状态, ItemStatus.不可执行);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 下发设备指令
+        /// </summary>
+        /// <param name="item"></param>
+        public void WriteDevice(WCS_TASK_ITEM item)
+        {
+            try
+            {
+                //未分配设备的任务不能继续作业
+                if (item.STATUS != "Q")
+                {
+                    return;
+                }
+
+                // =>组合资讯，下发指令
+
+                //更新状态
+                task.UpdateItem(item.WCS_NO, item.ITEM_ID, ItemColumnName.作业状态, ItemStatus.任务中);
+            }
+            catch (Exception ex)
+            {
+                //初始化
+                task.UpdateItem(item.WCS_NO, item.ITEM_ID, ItemColumnName.作业状态, ItemStatus.请求执行);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 设备到位进行对接作业
+        /// </summary>
+        public void LinkDevice()
+        {
+            try
+            {
+                #region 固定辊台 <==> 摆渡车
+                /*** 入库   正方向     固定辊台 (货物)==> 摆渡车 ***/
+
+                /*** 出库   反方向     摆渡车 (货物)==> 固定辊台 ***/
+
+                #endregion
+
+                #region 摆渡车 <==> 运输车
+                /*** 入库   正方向     摆渡车 (货物)==> 运输车[外] ***/
+
+                /*** 出库   反方向     运输车 (货物)==> 摆渡车[外] ***/
+
+                #endregion
+
+                #region 运输车 <==> 运输车
+                /*** 入库   正方向     运输车[外] (货物)==> 运输车[内] ***/
+
+                /*** 出库   反方向     运输车[内] (货物)==> 运输车[外] ***/
+
+
+                #endregion
+
+                #region 运输车 <==> 行车
+                /*** 入库   正方向     运输车 (货物)==> 行车 ***/
+
+                /*** 出库   反方向     行车 (货物)==> 运输车 ***/
+
+                #endregion
             }
             catch (Exception ex)
             {
@@ -140,9 +235,7 @@ namespace WCS_phase1.Action
         }
         #endregion
 
-        #region 设备对接
 
-        #endregion
 
         #region 接轨出库任务
 

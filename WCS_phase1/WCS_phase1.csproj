@@ -64,7 +64,6 @@
     <Compile Include="Functions\DataTableExtend.cs" />
     <Compile Include="Functions\SimpleTools.cs" />
     <Compile Include="Functions\TaskTools.cs" />
-    <Compile Include="Models\ConstantValues.cs" />
     <Compile Include="Models\MySQL.cs" />
     <Compile Include="Models\WCS_COMMAND_MASTER.cs" />
     <Compile Include="Models\WCS_COMMAND_V.cs" />
