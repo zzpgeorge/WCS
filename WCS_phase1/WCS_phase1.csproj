@@ -84,6 +84,7 @@
     <Compile Include="Models\WCS_COMMAND_MASTER.cs" />
     <Compile Include="Models\WCS_COMMAND_V.cs" />
     <Compile Include="Models\WCS_CONFIG_DEVICE.cs" />
+    <Compile Include="Models\WCS_CONFIG_LOC.cs" />
     <Compile Include="Models\WCS_TASK_INFO.cs" />
     <Compile Include="Models\WCS_TASK_ITEM.cs" />
     <Compile Include="Socket\AsyncTcpClient.cs" />
