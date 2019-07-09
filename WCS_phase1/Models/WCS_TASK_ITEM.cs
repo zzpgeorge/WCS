@@ -57,19 +57,26 @@ namespace WCS_phase1.Models
     /// </summary>
     public class ItemId
     {
-        public static String 固摆滚棒 = "111";
-        public static String 摆运滚棒 = "112";
-        public static String 运运滚棒 = "113";
+        public static String 固定辊台入库 = "111";
+        public static String 固定辊台出库 = "112";
+        public static String 摆渡车入库 = "113";
+        public static String 摆渡车出库 = "114";
+        public static String 运输车入库 = "115";
+        public static String 运输车出库 = "116";
 
-        public static String 摆渡车定位 = "011";
+        public static String 摆渡车定位固定辊台 = "011";
+        public static String 摆渡车定位运输车对接 = "012";
+        public static String 摆渡车定位 = "013";
 
         public static String 运输车定位 = "021";
-        public static String 运输车复位1 = "022";
-        public static String 运输车复位2 = "023";
+        public static String 运输车复位1 = "022";    // 摆渡车对接待命点
+        public static String 运输车复位2 = "023";    // 运输车对接待命点
+        public static String 运输车对接定位 = "024";
 
-        public static String 行车定位 = "031";
-        public static String 行车取货 = "032";
-        public static String 行车放货 = "033";
+        public static String 行车轨道定位 = "031";
+        public static String 行车库存定位 = "032";
+        public static String 行车取货 = "033";
+        public static String 行车放货 = "034";
     }
 
     /// <summary>

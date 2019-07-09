@@ -54,14 +54,14 @@ namespace WCS_phase1.Action
             {
                 // 摆渡车到固定辊台对接点
                 String ARFloc = task.GetARFLoc(command.FRT);    //获取对应摆渡车位置
-                task.CreateTask(command.WCS_NO, ItemId.摆渡车定位, ARFloc);  //生成摆渡车任务
+                task.CreateItem(command.WCS_NO, ItemId.摆渡车定位固定辊台, ARFloc);  //生成摆渡车任务
 
                 // 运输车到摆渡车对接点
-                task.CreateTask(command.WCS_NO, ItemId.运输车复位1, ConfigurationManager.AppSettings["StandbyP1"]);  //生成运输车任务
+                task.CreateItem(command.WCS_NO, ItemId.运输车复位1, ConfigurationManager.AppSettings["StandbyP1"]);  //生成运输车任务
 
                 // 行车到运输车对接取货点
                 String ABCloc = task.GetABCTrackLoc(command.LOC_1);     //获取对应行车位置
-                task.CreateTask(command.WCS_NO, ItemId.行车定位, ABCloc);     //生成行车任务
+                task.CreateItem(command.WCS_NO, ItemId.行车轨道定位, ABCloc);     //生成行车任务
 
                 //更新WCS COMMAND状态——执行中
                 task.UpdateCommand(command.WCS_NO, CommandStep.执行中);
@@ -73,7 +73,7 @@ namespace WCS_phase1.Action
                 //初始化
                 task.UpdateCommand(command.WCS_NO, CommandStep.请求执行);
                 task.UpdateTaskByWCSNo(command.WCS_NO, TaskSite.未执行);
-                task.DeleteTask(command.WCS_NO, "");
+                task.DeleteItem(command.WCS_NO, "");
                 throw ex;
             }
         }
@@ -94,7 +94,7 @@ namespace WCS_phase1.Action
             try
             {
                 // 获取待分配设备任务
-                DataTable dtitem = mySQL.SelectAll("select * from wcs_task_item where STATUS = 'N' and DEVICE is null order by CREATION_TIME");
+                DataTable dtitem = mySQL.SelectAll("select * from WCS_TASK_ITEM where STATUS = 'N' and DEVICE is null order by CREATION_TIME");
                 if (tools.IsNoData(dtitem))
                 {
                     return;
@@ -104,7 +104,7 @@ namespace WCS_phase1.Action
                 foreach (WCS_TASK_ITEM item in itemList)
                 {
                     ReadDevice(item);
-                    WriteDevice(item);
+                    WriteDeviceMove(item);
                 }
             }
             catch (Exception ex)
@@ -166,15 +166,20 @@ namespace WCS_phase1.Action
         }
 
         /// <summary>
-        /// 下发设备指令
+        /// 下发设备定位指令
         /// </summary>
         /// <param name="item"></param>
-        public void WriteDevice(WCS_TASK_ITEM item)
+        public void WriteDeviceMove(WCS_TASK_ITEM item)
         {
             try
             {
-                //未分配设备的任务不能继续作业
-                if (item.STATUS != "Q")
+                //状态不为[请求执行]的任务不能继续作业
+                if (item.STATUS != ItemStatus.请求执行)
+                {
+                    return;
+                }
+                //对接任务不作业
+                if (item.ITEM_ID.Substring(0, 2) == "11")
                 {
                     return;
                 }
@@ -193,43 +198,255 @@ namespace WCS_phase1.Action
         }
 
         /// <summary>
-        /// 设备到位进行对接作业
+        /// 设备到位进行对接作业 [对接任务排程触发]
         /// </summary>
         public void LinkDevice()
         {
             try
             {
                 #region 固定辊台 <==> 摆渡车
-                /*** 入库   正方向     固定辊台 (货物)==> 摆渡车 ***/
-
-                /*** 出库   反方向     摆渡车 (货物)==> 固定辊台 ***/
-
+                // 获取已完成对接阶段的摆渡车任务
+                List<WCS_TASK_ITEM> itemList_ARF = task.GetItemList_R(ItemId.摆渡车定位固定辊台);
+                // 遍历生成滚棒任务
+                foreach (WCS_TASK_ITEM item_ARF in itemList_ARF)
+                {
+                    CreateTask_ARF_FRT(item_ARF);
+                }
                 #endregion
 
                 #region 摆渡车 <==> 运输车
-                /*** 入库   正方向     摆渡车 (货物)==> 运输车[外] ***/
-
-                /*** 出库   反方向     运输车 (货物)==> 摆渡车[外] ***/
-
+                // 获取已完成对接阶段的摆渡车任务
+                List<WCS_TASK_ITEM> itemList_A = task.GetItemList_R(ItemId.摆渡车定位运输车对接);
+                // 遍历生成滚棒任务
+                foreach (WCS_TASK_ITEM item_A in itemList_A)
+                {
+                    CreateTask_ARF_RGV(item_A);
+                }
                 #endregion
 
                 #region 运输车 <==> 运输车
-                /*** 入库   正方向     运输车[外] (货物)==> 运输车[内] ***/
-
-                /*** 出库   反方向     运输车[内] (货物)==> 运输车[外] ***/
-
-
+                // 获取已完成对接阶段的运输车任务
+                List<WCS_TASK_ITEM> itemList_R = task.GetItemList_R(ItemId.运输车对接定位);
+                // 遍历生成滚棒任务
+                foreach (WCS_TASK_ITEM item_R in itemList_R)
+                {
+                    CreateTask_RGV_RGV(item_R);
+                }
                 #endregion
 
                 #region 运输车 <==> 行车
-                /*** 入库   正方向     运输车 (货物)==> 行车 ***/
-
-                /*** 出库   反方向     行车 (货物)==> 运输车 ***/
-
+                // 获取已完成对接阶段的运输车任务
+                List<WCS_TASK_ITEM> itemList_ABC = task.GetItemList_R(ItemId.行车轨道定位);
+                // 遍历生成夹具取放任务
+                foreach (WCS_TASK_ITEM item_ABC in itemList_ABC)
+                {
+                    CreateTask_RGV_ABC(item_ABC);
+                }
                 #endregion
             }
             catch (Exception ex)
             {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 创建摆渡车&固定辊台对接出入库 ITEM 任务
+        /// </summary>
+        /// <param name="item"></param>
+        public void CreateTask_ARF_FRT(WCS_TASK_ITEM item)
+        {
+            try
+            {
+                // 判断是出入库类型
+                switch (item.WCS_NO.Substring(0, 1))
+                {
+                    case "I":   // 入库  固定辊台 (货物)==> 摆渡车
+                        // 先动摆渡车滚棒
+                        task.CreateCustomItem(item.WCS_NO, ItemId.摆渡车入库, item.DEVICE, "", "", ItemStatus.请求执行);
+                        // 后动固定辊台滚棒
+                        task.CreateCustomItem(item.WCS_NO, ItemId.固定辊台入库, task.GetFRTDevice(item.LOC_TO), "", "", ItemStatus.请求执行);
+                        break;
+                    case "O":   // 出库  摆渡车 (货物)==> 固定辊台
+                        // 先动固定辊台滚棒
+                        task.CreateCustomItem(item.WCS_NO, ItemId.固定辊台出库, task.GetFRTDevice(item.LOC_TO), "", "", ItemStatus.请求执行);
+                        // 后动摆渡车滚棒
+                        task.CreateCustomItem(item.WCS_NO, ItemId.摆渡车出库, item.DEVICE, "", "", ItemStatus.请求执行);
+                        break;
+                    default:
+                        break;
+                }
+                //摆渡车初始任务更新状态——完成
+                task.UpdateItem(item.WCS_NO, item.ITEM_ID, ItemColumnName.作业状态, ItemStatus.完成任务);
+            }
+            catch (Exception ex)
+            {
+                //恢复
+                task.UpdateItem(item.WCS_NO, item.ITEM_ID, ItemColumnName.作业状态, ItemStatus.交接);
+                task.DeleteItem(item.WCS_NO, ItemId.固定辊台入库);
+                task.DeleteItem(item.WCS_NO, ItemId.固定辊台出库);
+                task.DeleteItem(item.WCS_NO, ItemId.摆渡车入库);
+                task.DeleteItem(item.WCS_NO, ItemId.摆渡车出库);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 创建摆渡车&运输车对接出入库 ITEM 任务
+        /// </summary>
+        /// <param name="item"></param>
+        public void CreateTask_ARF_RGV(WCS_TASK_ITEM item)
+        {
+            String wcsno_R = "";
+            String itemid_R = "";
+            String device_R = "";
+            try
+            {
+                // 查看运输车是否到位
+                String sql_R = String.Format(@"select WCS_NO, ITEM_ID, DEVICE from WCS_TASK_ITEM where STATUS = 'R' and WCS_NO = '{0}' and ITEM_ID = '{1}'", item.WCS_NO, ItemId.运输车复位1);
+                DataTable dtitem_R = mySQL.SelectAll(sql_R);
+                if (tools.IsNoData(dtitem_R))
+                {
+                    return;
+                }
+                wcsno_R = dtitem_R.Rows[0]["WCS_NO"].ToString();
+                itemid_R = dtitem_R.Rows[0]["ITEM_ID"].ToString();
+                device_R = dtitem_R.Rows[0]["DEVICE"].ToString();
+                // 判断是出入库类型
+                switch (item.WCS_NO.Substring(0, 1))
+                {
+                    case "I":   // 入库  摆渡车 (货物)==> 运输车
+                        // 先动运输车滚棒
+                        task.CreateCustomItem(item.WCS_NO, ItemId.运输车入库, device_R, "", "", ItemStatus.请求执行);
+                        // 后动摆渡车滚棒
+                        task.CreateCustomItem(item.WCS_NO, ItemId.摆渡车入库, item.DEVICE, "", "", ItemStatus.请求执行);
+                        break;
+                    case "O":   // 出库  运输车 (货物)==> 摆渡车
+                        // 先动摆渡车滚棒
+                        task.CreateCustomItem(item.WCS_NO, ItemId.摆渡车出库, item.DEVICE, "", "", ItemStatus.请求执行);
+                        // 后动运输车滚棒
+                        task.CreateCustomItem(item.WCS_NO, ItemId.运输车出库, device_R, "", "", ItemStatus.请求执行);
+                        break;
+                    default:
+                        break;
+                }
+                //摆渡车&运输车初始任务更新状态——完成
+                task.UpdateItem(item.WCS_NO, item.ITEM_ID, ItemColumnName.作业状态, ItemStatus.完成任务);
+                task.UpdateItem(wcsno_R, itemid_R, ItemColumnName.作业状态, ItemStatus.完成任务);
+            }
+            catch (Exception ex)
+            {
+                //恢复
+                task.UpdateItem(item.WCS_NO, item.ITEM_ID, ItemColumnName.作业状态, ItemStatus.交接);
+                task.UpdateItem(wcsno_R, itemid_R, ItemColumnName.作业状态, ItemStatus.交接);
+                task.DeleteItem(item.WCS_NO, ItemId.运输车入库);
+                task.DeleteItem(item.WCS_NO, ItemId.摆渡车入库);
+                task.DeleteItem(item.WCS_NO, ItemId.摆渡车出库);
+                task.DeleteItem(item.WCS_NO, ItemId.运输车出库);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 创建运输车&运输车对接出入库 ITEM 任务
+        /// </summary>
+        /// <param name="item"></param>
+        public void CreateTask_RGV_RGV(WCS_TASK_ITEM item)
+        {
+            String wcsno_R = "";
+            String itemid_R = "";
+            String device_R = "";
+            try
+            {
+                // 查看运输车是否在运输车对接待命点
+                String sql_R = String.Format(@"select WCS_NO, ITEM_ID, DEVICE from WCS_TASK_ITEM where STATUS = 'R' and WCS_NO = '{0}' and ITEM_ID = '{1}'", item.WCS_NO, ItemId.运输车复位2);
+                DataTable dtitem_R = mySQL.SelectAll(sql_R);
+                if (tools.IsNoData(dtitem_R))
+                {
+                    return;
+                }
+                wcsno_R = dtitem_R.Rows[0]["WCS_NO"].ToString();
+                itemid_R = dtitem_R.Rows[0]["ITEM_ID"].ToString();
+                device_R = dtitem_R.Rows[0]["DEVICE"].ToString();
+                // 判断是出入库类型
+                switch (item.WCS_NO.Substring(0, 1))
+                {
+                    case "I":   // 入库  运输车[外] (货物)==> 运输车[内]
+                        // 先动运输车滚棒[内]
+                        task.CreateCustomItem(item.WCS_NO, ItemId.运输车入库, device_R, "", "", ItemStatus.请求执行);
+                        // 后动运输车滚棒[外]
+                        task.CreateCustomItem(item.WCS_NO, ItemId.运输车入库, item.DEVICE, "", "", ItemStatus.请求执行);
+                        break;
+                    case "O":   // 出库  运输车[内] (货物)==> 运输车[外]
+                        // 先动运输车滚棒[外]
+                        task.CreateCustomItem(item.WCS_NO, ItemId.运输车出库, item.DEVICE, "", "", ItemStatus.请求执行);
+                        // 后动运输车滚棒[内]
+                        task.CreateCustomItem(item.WCS_NO, ItemId.运输车出库, device_R, "", "", ItemStatus.请求执行);
+                        break;
+                    default:
+                        break;
+                }
+                //内外运输车初始任务更新状态——完成
+                task.UpdateItem(item.WCS_NO, item.ITEM_ID, ItemColumnName.作业状态, ItemStatus.完成任务);
+                task.UpdateItem(wcsno_R, itemid_R, ItemColumnName.作业状态, ItemStatus.完成任务);
+            }
+            catch (Exception ex)
+            {
+                //恢复
+                task.UpdateItem(item.WCS_NO, item.ITEM_ID, ItemColumnName.作业状态, ItemStatus.交接);
+                task.UpdateItem(wcsno_R, itemid_R, ItemColumnName.作业状态, ItemStatus.交接);
+                task.DeleteItem(item.WCS_NO, ItemId.运输车入库);
+                task.DeleteItem(item.WCS_NO, ItemId.运输车出库);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 创建运输车&行车对接出入库 ITEM 任务
+        /// </summary>
+        /// <param name="item"></param>
+        public void CreateTask_RGV_ABC(WCS_TASK_ITEM item)
+        {
+            String wcsno_R = "";
+            String itemid_R = "";
+            String device_R = "";
+            try
+            {
+                // 查看运输车是否在运输车对接待命点
+                String sql_R = String.Format(@"select WCS_NO, ITEM_ID, DEVICE from WCS_TASK_ITEM where STATUS = 'R' and WCS_NO = '{0}' and ITEM_ID = '{1}'", item.WCS_NO, ItemId.运输车定位);
+                DataTable dtitem_R = mySQL.SelectAll(sql_R);
+                if (tools.IsNoData(dtitem_R))
+                {
+                    return;
+                }
+                wcsno_R = dtitem_R.Rows[0]["WCS_NO"].ToString();
+                itemid_R = dtitem_R.Rows[0]["ITEM_ID"].ToString();
+                device_R = dtitem_R.Rows[0]["DEVICE"].ToString();
+                // 判断是出入库类型
+                switch (item.WCS_NO.Substring(0, 1))
+                {
+                    case "I":   // 入库  运输车 (货物)==> 行车 
+                        // 行车取货
+                        task.CreateCustomItem(item.WCS_NO, ItemId.行车取货, item.DEVICE, "", item.LOC_TO, ItemStatus.请求执行);
+                        break;
+                    case "O":   // 出库  行车 (货物)==> 运输车 
+                        // 行车放货
+                        task.CreateCustomItem(item.WCS_NO, ItemId.行车放货, item.DEVICE, "", item.LOC_TO, ItemStatus.请求执行);
+                        break;
+                    default:
+                        break;
+                }
+                //行车&运输车初始任务更新状态——完成
+                task.UpdateItem(item.WCS_NO, item.ITEM_ID, ItemColumnName.作业状态, ItemStatus.完成任务);
+                task.UpdateItem(wcsno_R, itemid_R, ItemColumnName.作业状态, ItemStatus.完成任务);
+            }
+            catch (Exception ex)
+            {
+                //恢复
+                task.UpdateItem(item.WCS_NO, item.ITEM_ID, ItemColumnName.作业状态, ItemStatus.交接);
+                task.UpdateItem(wcsno_R, itemid_R, ItemColumnName.作业状态, ItemStatus.交接);
+                task.DeleteItem(item.WCS_NO, ItemId.行车取货);
+                task.DeleteItem(item.WCS_NO, ItemId.行车放货);
                 throw ex;
             }
         }
