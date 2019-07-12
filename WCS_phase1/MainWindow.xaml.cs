@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WCS_phase1.Action;
-
+using WCS_phase1.Http;
 namespace WCS_phase1
 {
     /// <summary>
@@ -24,6 +24,7 @@ namespace WCS_phase1
         public MainWindow()
         {
             InitializeComponent();
+            HttpServerControl.StartServer();
         }
 
         private void BtnTask_Click(object sender, RoutedEventArgs e)

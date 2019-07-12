@@ -80,6 +80,8 @@
     <Compile Include="Functions\DataTableExtend.cs" />
     <Compile Include="Functions\SimpleTools.cs" />
     <Compile Include="Functions\TaskTools.cs" />
+    <Compile Include="Http\HttpServerControl.cs" />
+    <Compile Include="Http\Routes.cs" />
     <Compile Include="Models\MySQL.cs" />
     <Compile Include="Models\WCS_COMMAND_MASTER.cs" />
     <Compile Include="Models\WCS_COMMAND_V.cs" />
@@ -89,8 +91,9 @@
     <Compile Include="Models\WCS_TASK_ITEM.cs" />
     <Compile Include="Socket\AsyncTcpClient.cs" />
     <Compile Include="Socket\AsyncTcpServer.cs" />
-    <Compile Include="Socket\ClientMaster.cs" />
     <Compile Include="Action\TaskControl.cs" />
+    <Compile Include="Socket\CrcMethod.cs" />
+    <Compile Include="Socket\SocketControl.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -131,6 +134,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\HttpServer\MHttpServer.csproj">
+      <Project>{9E139539-C272-488A-BFCF-CADDF458DF9D}</Project>
+      <Name>MHttpServer</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

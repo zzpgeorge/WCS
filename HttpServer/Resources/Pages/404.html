@@ -1,0 +1,45 @@
+﻿<html>
+<head>
+    <meta charset="utf-8" />
+    <title>指令不对？</title>
+</head>
+<body>
+    <h1>Not Found</h1>
+    <br /><br />
+    <h2>帮助说明</h2>
+    <b>出仓：WMS 向 WCS 发码</b><br /><br />
+<pre>
+{
+    "Task_UID":"56E52052-CB0B-4201-BD2C-4A38892C4582",
+    "Task_type" : 2,  // 出库
+    "Barcode" : "20190101120101001",
+    "W_S_Loc" : "B01-02-03",
+    "W_D_Loc" : "C01"
+}
+</pre>
+
+    <br />
+    <br />
+    <b>移仓：WMS 向 WCS 发码</b><br />
+<pre>
+{
+    "Task_UID":"5A836CCD-3143-42AA-971D-210C8EDEA0B2",
+    "Task_type" : 3,  // 移仓
+    "Barcode" : "20190101120101001",
+    "W_S_Loc" : "B01-02-03",
+    "W_D_Loc" : "B01-05-02"
+}
+</pre>
+    <b>盘点：WMS 向 WCS 发码 </b><br />
+    <pre>
+{
+    "Task_UID":" A43242E0-9DF9-4D89-B176-C341E6FF80C5",
+    "Task_type" : 4,  // 盘点
+    "Barcode" : "20190101120101001",
+    "W_S_Loc" : "B01-02-03",
+}
+</pre>
+
+
+</body>
+</html>
