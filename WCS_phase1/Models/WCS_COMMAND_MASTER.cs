@@ -52,9 +52,9 @@ namespace WCS_phase1.Models
     /// </summary>
     public class CommandStep
     {
-        public static String 生成单号 = "1";
-        public static String 请求执行 = "2";
-        public static String 执行中 = "3";
-        public static String 结束 = "4";
+        public const String 生成单号 = "1";
+        public const String 请求执行 = "2";
+        public const String 执行中 = "3";
+        public const String 结束 = "4";
     }
 }

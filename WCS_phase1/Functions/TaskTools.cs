@@ -84,6 +84,88 @@ namespace WCS_phase1.Functions
         }
 
         /// <summary>
+        /// 获取wms入库目标位置对应设备点位(行车放货库存坐标)
+        /// </summary>
+        /// <param name="wms_loc"></param>
+        /// <returns></returns>
+        public String GetLocForIn(String wms_loc)
+        {
+            try
+            {
+                String sql = String.Format(@"select ABC_LOC_STOCK from WCS_CONFIG_LOC where WMS_LOC = '{0}'", wms_loc);
+                DataTable dtloc = mySQL.SelectAll(sql);
+                if (tools.IsNoData(dtloc))
+                {
+                    return "";
+                }
+                return dtloc.Rows[0]["ABC_LOC_STOCK"].ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 获取wms入库目标位置对应设备点位(运输车定位坐标)[id表示是哪个辊台]
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="loc"></param>
+        /// <returns></returns>
+        public String GetRGVLoc(int id, String loc)
+        {
+            try
+            {
+                String sql;
+                if (id == 1)    // 运输车辊台①[内]定位
+                {
+                    sql = String.Format(@"select distinct RGV_LOC_1 LOC from WCS_CONFIG_LOC where WMS_LOC = '{0}'", loc);
+                }
+                else if (id == 2)   // 运输车辊台②[外]定位
+                {
+                    sql = String.Format(@"select distinct RGV_LOC_2 LOC from WCS_CONFIG_LOC where WMS_LOC = '{0}'", loc);
+                }
+                else
+                {
+                    return "0";
+                }
+                DataTable dtloc = mySQL.SelectAll(sql);
+                if (tools.IsNoData(dtloc))
+                {
+                    return "0";
+                }
+                return dtloc.Rows[0]["LOC"].ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 获取 COMMAND 状态
+        /// </summary>
+        /// <param name="wcs_no"></param>
+        /// <returns></returns>
+        public String GetCommandStep(String wcs_no)
+        {
+            try
+            {
+                String sql = String.Format(@"select distinct STEP from WCS_COMMAND_MASTER where WCS_NO = '{0}'", wcs_no);
+                DataTable dtstep = mySQL.SelectAll(sql);
+                if (tools.IsNoData(dtstep))
+                {
+                    return "";
+                }
+                return dtstep.Rows[0]["STEP"].ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
         /// 更新 COMMAND 状态[1.生成单号，2.请求执行，3.执行中，4.结束]
         /// </summary>
         /// <param name="step"></param>
@@ -195,7 +277,7 @@ namespace WCS_phase1.Functions
         {
             try
             {
-                String sql = String.Format(@"insert into WCS_TASK_ITEM(WCS_NO,ITEM_ID,DEVICE,LOC_FROM,LOC_TO,STATUS) values('{0}','{1}','{2}','{3}','{4}','{5}')", 
+                String sql = String.Format(@"insert into WCS_TASK_ITEM(WCS_NO,ITEM_ID,DEVICE,LOC_FROM,LOC_TO,STATUS) values('{0}','{1}','{2}','{3}','{4}','{5}')",
                              wcs_no, item_id, device, loc_from, loc_to, status);
                 mySQL.ExcuteSql(sql);
             }
@@ -247,7 +329,7 @@ namespace WCS_phase1.Functions
                 DataTable dtitem = mySQL.SelectAll(sql);
                 if (tools.IsNoData(dtitem))
                 {
-                    return null;
+                    return new List<WCS_TASK_ITEM>();
                 }
                 List<WCS_TASK_ITEM> itemList = dtitem.ToDataList<WCS_TASK_ITEM>();
                 return itemList;
@@ -257,5 +339,6 @@ namespace WCS_phase1.Functions
                 throw ex;
             }
         }
+
     }
 }

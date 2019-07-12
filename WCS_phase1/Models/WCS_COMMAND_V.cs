@@ -64,7 +64,7 @@ namespace WCS_phase1.Models
         /// <summary>
         /// 任务状态2
         /// </summary>
-        public String SITE2 { get; set; }
+        public String SITE_2 { get; set; }
 
     }
 }

@@ -57,26 +57,26 @@ namespace WCS_phase1.Models
     /// </summary>
     public class ItemId
     {
-        public static String 固定辊台入库 = "111";
-        public static String 固定辊台出库 = "112";
-        public static String 摆渡车入库 = "113";
-        public static String 摆渡车出库 = "114";
-        public static String 运输车入库 = "115";
-        public static String 运输车出库 = "116";
+        public const String 固定辊台入库 = "111";
+        public const String 固定辊台出库 = "112";
+        public const String 摆渡车入库 = "113";
+        public const String 摆渡车出库 = "114";
+        public const String 运输车入库 = "115";
+        public const String 运输车出库 = "116";
 
-        public static String 摆渡车定位固定辊台 = "011";
-        public static String 摆渡车定位运输车对接 = "012";
-        public static String 摆渡车定位 = "013";
+        public const String 摆渡车定位固定辊台 = "011";
+        public const String 摆渡车定位运输车对接 = "012";
+        public const String 摆渡车定位 = "013";
 
-        public static String 运输车定位 = "021";
-        public static String 运输车复位1 = "022";    // 摆渡车对接待命点
-        public static String 运输车复位2 = "023";    // 运输车对接待命点
-        public static String 运输车对接定位 = "024";
+        public const String 运输车定位 = "021";
+        public const String 运输车复位1 = "022";    // 摆渡车对接待命点
+        public const String 运输车复位2 = "023";    // 运输车对接待命点
+        public const String 运输车对接定位 = "024";
 
-        public static String 行车轨道定位 = "031";
-        public static String 行车库存定位 = "032";
-        public static String 行车取货 = "033";
-        public static String 行车放货 = "034";
+        public const String 行车轨道定位 = "031";
+        public const String 行车库存定位 = "032";
+        public const String 行车取货 = "033";
+        public const String 行车放货 = "034";
     }
 
     /// <summary>
@@ -84,13 +84,13 @@ namespace WCS_phase1.Models
     /// </summary>
     public class ItemStatus
     {
-        public static String 不可执行 = "N";
-        public static String 请求执行 = "Q";
-        public static String 任务中 = "W";
-        public static String 失效 = "X";
-        public static String 交接 = "R";
-        public static String 出现异常 = "E";
-        public static String 完成任务 = "Y";
+        public const String 不可执行 = "N";
+        public const String 请求执行 = "Q";
+        public const String 任务中 = "W";
+        public const String 失效 = "X";
+        public const String 交接 = "R";
+        public const String 出现异常 = "E";
+        public const String 完成任务 = "Y";
     }
 
     /// <summary>
@@ -98,8 +98,8 @@ namespace WCS_phase1.Models
     /// </summary>
     public class ItemColumnName
     {
-        public static String 设备编号 = "DEVICE";
-        public static String 来源位置 = "LOC_FROM";
-        public static String 作业状态 = "STATUS";
+        public const String 设备编号 = "DEVICE";
+        public const String 来源位置 = "LOC_FROM";
+        public const String 作业状态 = "STATUS";
     }
 }

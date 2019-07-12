@@ -53,13 +53,25 @@ namespace WCS_phase1.Models
     }
 
     /// <summary>
+    /// Task类型
+    /// </summary>
+    public class TaskType
+    {
+        public const String AGV搬运 = "0";
+        public const String 入库 = "1";
+        public const String 出库 = "2";
+        public const String 移仓 = "3";
+        public const String 盘点 = "4";
+    }
+
+    /// <summary>
     /// Task状态
     /// </summary>
     public class TaskSite
     {
-        public static String 未执行 = "N";
-        public static String 任务中 = "W";
-        public static String 完成 = "Y";
-        public static String 失效 = "X";
+        public const String 未执行 = "N";
+        public const String 任务中 = "W";
+        public const String 完成 = "Y";
+        public const String 失效 = "X";
     }
 }

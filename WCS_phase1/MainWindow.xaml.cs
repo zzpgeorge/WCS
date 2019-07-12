@@ -29,9 +29,9 @@ namespace WCS_phase1
         private void BtnTask_Click(object sender, RoutedEventArgs e)
         {
             TaskControl taskControl = new TaskControl();
-            //taskControl.Run_In_Initial();
-            //taskControl.RWDevice();
-            //taskControl.LinkDevice();
+            taskControl.Run_InInitial();
+            taskControl.Run_ItemDevice();
+            taskControl.Run_LinkDevice();
         }
     }
 }
