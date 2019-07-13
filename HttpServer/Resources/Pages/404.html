@@ -7,7 +7,9 @@
     <h1>Not Found</h1>
     <br /><br />
     <h2>帮助说明</h2>
-    <b>出仓：WMS 向 WCS 发码</b><br /><br />
+    <b>出仓：WMS 向 WCS 发码</b><br />
+    <b>URL:http://xxx.xxx.xxx.xxx:8080/StockOutHandle</b><br />
+    <b>GET</b><br />
 <pre>
 {
     "Task_UID":"56E52052-CB0B-4201-BD2C-4A38892C4582",
@@ -21,6 +23,8 @@
     <br />
     <br />
     <b>移仓：WMS 向 WCS 发码</b><br />
+    <b>URL:http://xxx.xxx.xxx.xxx:8080/StockMoveHandle</b><br />
+    <b>GET</b><br />
 <pre>
 {
     "Task_UID":"5A836CCD-3143-42AA-971D-210C8EDEA0B2",
@@ -31,7 +35,9 @@
 }
 </pre>
     <b>盘点：WMS 向 WCS 发码 </b><br />
-    <pre>
+    <b>URL:http://xxx.xxx.xxx.xxx:8080/StockCheckHandle</b><br />
+    <b>GET</b><br />
+<pre>
 {
     "Task_UID":" A43242E0-9DF9-4D89-B176-C341E6FF80C5",
     "Task_type" : 4,  // 盘点

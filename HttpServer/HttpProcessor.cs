@@ -70,7 +70,8 @@ namespace MHttpServer
 
                 inputStream.Close();
                 inputStream = null;
-
+                //Console.WriteLine("请求结束：" + DateTime.Now.ToString("yyyyMMddHHmmss"));
+                //log.Info("请求结束：" + DateTime.Now.ToString("yyyyMMddHHmmss"));
         }
 
         /// <summary>

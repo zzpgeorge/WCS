@@ -45,6 +45,7 @@ namespace MHttpServer
             while (this.IsActive)
             {
                 TcpClient s = this.Listener.AcceptTcpClient();
+                //Console.WriteLine("请求开始："+DateTime.Now.ToString("yyyyMMddHHmmss"));
                 Thread thread = new Thread(() =>
                 {
                     this.Processor.HandleClient(s);

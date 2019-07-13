@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MHttpServer
 {
-    class HttpBuilder
+    public class HttpBuilder
     {
         public static HttpResponse InternalServerError()
         {
