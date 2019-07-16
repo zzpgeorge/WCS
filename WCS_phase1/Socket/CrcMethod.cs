@@ -277,7 +277,21 @@ namespace AsyncTcp
         }
         #endregion
 
+        #region CheckCRC
+        public static bool CheckCRC(byte[] data)
+        {
+            int lenght = data.Length;
+            if (data.Length == 0 || data.Length == 2) return false;
+            byte[] modbusCrc = ToModbusCRC16Byte(data.Take(data.Length - 2).ToArray());
+            if(modbusCrc.Length == 2 && data[lenght-2] == modbusCrc[0] 
+                && data[lenght-1] == modbusCrc[1])
+            {
+                return true;
+            }
+            return false;
+        }
 
+        #endregion
     }
 
 }

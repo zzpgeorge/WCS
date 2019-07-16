@@ -23,12 +23,12 @@ namespace WCS_phase1
     public partial class MainWindow : Window
     {
         DataControl dataControl;
-        ABC abc;
+
         public MainWindow()
         {
             InitializeComponent();
             dataControl = new DataControl();
-            abc = new ABC("AGV01");
+
         }
 
         private void BtnTask_Click(object sender, RoutedEventArgs e)
@@ -41,10 +41,7 @@ namespace WCS_phase1
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            byte numb = abc.ABCNum();
-            byte[] goodXsite = abc.GoodsXsite();
-
-            int a = 2;
+            DataControl._mHttp.DoPost("http://10.9.31.101/wms.php");
         }
     }
 }

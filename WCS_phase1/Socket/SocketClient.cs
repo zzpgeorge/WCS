@@ -130,9 +130,11 @@ namespace WCS_phase1.Socket
         private void Client_DatagramReceived(object sender, TcpDatagramReceivedEventArgs<byte[]> e)
         {
             //_master.UpdateDevceBData(Name, e.Datagram);
-            Bdata = e.Datagram;
-            UpDateTime = DateTime.Now;
-
+            if (CRCMethod.CheckCRC(e.Datagram))
+            {
+                Bdata = e.Datagram;
+                UpDateTime = DateTime.Now;
+            }
         }
 
         /// <summary>
@@ -157,5 +159,7 @@ namespace WCS_phase1.Socket
             Console.WriteLine(Name + "：服务器已连接");
             IsAlive = true;
         }
+
+
     }
 }

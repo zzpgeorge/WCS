@@ -79,7 +79,7 @@
     <Compile Include="Devices\ABC.cs" />
     <Compile Include="Devices\AGV.cs" />
     <Compile Include="Devices\ARF.cs" />
-    <Compile Include="Devices\Devices.cs" />
+    <Compile Include="Devices\Device.cs" />
     <Compile Include="Devices\FRT.cs" />
     <Compile Include="Devices\RGV.cs" />
     <Compile Include="Functions\DataTableExtend.cs" />
