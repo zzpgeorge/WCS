@@ -17,18 +17,19 @@ namespace WCS_phase1.Action
         /// 获取WMS资讯写入WCS数据库
         /// </summary>
         /// <param name="wms"></param>
-        public void WriteTaskToWCS(WmsModel wms)
+        public bool WriteTaskToWCS(WmsModel wms)
         {
             try
             {
                 MySQL mySQL = new MySQL();
-                String sql = String.Format(@"insert into wcs_task_info(TASK_UID, TASK_TYPE, BARCODE, W_S_LOC, W_D_LOC)",
+                String sql = String.Format(@"insert into wcs_task_info(TASK_UID, TASK_TYPE, BARCODE, W_S_LOC, W_D_LOC) values('{0}','{1}','{2}','{3}','{4}')",
                     wms.Task_UID.ToString(), wms.Task_type.ToString(), wms.Barcode.ToString(), wms.W_S_Loc.ToString(), wms.W_D_Loc.ToString());
                 mySQL.ExcuteSql(sql);
+                return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                return false;
             }
         }
     }
