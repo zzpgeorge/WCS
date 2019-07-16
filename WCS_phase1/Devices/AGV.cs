@@ -9,7 +9,14 @@ namespace WCS_phase1.Devices
     /// <summary>
     /// 自动制导运输车 Automated Guided Vehicle
     /// </summary>
-    public class AGV
+    public class AGV : Device
     {
+        public AGV(string name) : base(name)
+        {
+
+        }
+
+
+
     }
 }

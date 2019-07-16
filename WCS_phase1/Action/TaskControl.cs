@@ -416,7 +416,6 @@ namespace WCS_phase1.Action
         }
         #endregion
 
-
         #region 分配设备
         /// <summary>
         /// 执行分配设备至各个任务

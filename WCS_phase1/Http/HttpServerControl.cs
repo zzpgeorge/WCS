@@ -17,11 +17,11 @@ namespace WCS_phase1.Http
         /// <summary>
         /// 服务监听端口
         /// </summary>
-        private static int listenerPort = 8080;
-        private static bool isStart = false;
+        private int listenerPort = 8080;
+        private bool isStart = false;
         
 
-        public static void StartServer()
+        public void StartServer()
         {
             try
             {

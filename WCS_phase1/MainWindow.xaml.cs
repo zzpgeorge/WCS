@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WCS_phase1.Action;
+using WCS_phase1.Devices;
 using WCS_phase1.Http;
 namespace WCS_phase1
 {
@@ -21,10 +22,13 @@ namespace WCS_phase1
     /// </summary>
     public partial class MainWindow : Window
     {
+        DataControl dataControl;
+        ABC abc;
         public MainWindow()
         {
             InitializeComponent();
-            HttpServerControl.StartServer();
+            dataControl = new DataControl();
+            abc = new ABC("AGV01");
         }
 
         private void BtnTask_Click(object sender, RoutedEventArgs e)
@@ -33,6 +37,14 @@ namespace WCS_phase1
             taskControl.Run_InInitial();
             taskControl.Run_ItemDevice();
             taskControl.Run_LinkDevice();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            byte numb = abc.ABCNum();
+            byte[] goodXsite = abc.GoodsXsite();
+
+            int a = 2;
         }
     }
 }

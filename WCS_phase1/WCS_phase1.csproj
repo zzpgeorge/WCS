@@ -75,14 +75,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Action\DataControl.cs" />
     <Compile Include="Devices\ABC.cs" />
     <Compile Include="Devices\AGV.cs" />
     <Compile Include="Devices\ARF.cs" />
+    <Compile Include="Devices\Devices.cs" />
     <Compile Include="Devices\FRT.cs" />
     <Compile Include="Devices\RGV.cs" />
     <Compile Include="Functions\DataTableExtend.cs" />
     <Compile Include="Functions\SimpleTools.cs" />
     <Compile Include="Functions\TaskTools.cs" />
+    <Compile Include="Http\HttpControl.cs" />
     <Compile Include="Http\HttpServerControl.cs" />
     <Compile Include="Http\Routes.cs" />
     <Compile Include="Http\WmsModel.cs" />
@@ -98,6 +101,7 @@
     <Compile Include="Socket\AsyncTcpServer.cs" />
     <Compile Include="Action\TaskControl.cs" />
     <Compile Include="Socket\CrcMethod.cs" />
+    <Compile Include="Socket\SocketClient.cs" />
     <Compile Include="Socket\SocketControl.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
