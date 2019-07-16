@@ -5,6 +5,7 @@ using MHttpServer;
 using MHttpServer.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using WCS_phase1.Action;
 
 namespace WCS_phase1.Http
 {
@@ -68,7 +69,11 @@ namespace WCS_phase1.Http
                 WmsModel model = JsonConvert.DeserializeObject<WmsModel>(request.Content);
                 HttpResponse response = CheckWmsModel(model,WmsStatus.StockOutTask,true);
                 if (response != null) return response;
-                return OkResponse("StockOutHandle");
+                if(new ForWMSControl().WriteTaskToWCS(model))
+                {
+                    return FailResponse();
+                }
+                return OkResponse();
             }
             else
             {
@@ -89,7 +94,11 @@ namespace WCS_phase1.Http
                 WmsModel model = JsonConvert.DeserializeObject<WmsModel>(request.Content);
                 HttpResponse response = CheckWmsModel(model,WmsStatus.StockMoveTask,true);
                 if (response != null) return response;
-                return OkResponse("StockMoveHandle");
+                if (new ForWMSControl().WriteTaskToWCS(model))
+                {
+                    return FailResponse();
+                }
+                return OkResponse();
             }
             else
             {
@@ -110,7 +119,11 @@ namespace WCS_phase1.Http
                 WmsModel model = JsonConvert.DeserializeObject<WmsModel>(request.Content);
                 HttpResponse response = CheckWmsModel(model,WmsStatus.StockCheckTask,false);
                 if (response != null) return response;
-                return OkResponse("StockCheckHandle");
+                if (new ForWMSControl().WriteTaskToWCS(model))
+                {
+                    return FailResponse();
+                }
+                return OkResponse();
             }
             else
             {
@@ -177,6 +190,16 @@ namespace WCS_phase1.Http
             return new HttpResponse()
             {
                 ContentAsUTF8 = "can't get any msg",
+                ReasonPhrase = "OK",
+                StatusCode = "200"
+            };
+        }
+
+        private static HttpResponse FailResponse(string msg = "Fail")
+        {
+            return new HttpResponse()
+            {
+                ContentAsUTF8 = msg,
                 ReasonPhrase = "OK",
                 StatusCode = "200"
             };

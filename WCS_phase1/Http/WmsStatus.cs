@@ -154,7 +154,7 @@ namespace WCS_phase1.Http
         /// <summary>
         /// 货物二维码：根据货物二维码获取任务信息 
         /// </summary>
-        public static string StockBarcode = "B";
+        public static string Barcode = "B";
 
         /// <summary>
         /// 任务UID：根据任务 UID 获取任务信息 
@@ -190,6 +190,11 @@ namespace WCS_phase1.Http
         /// 状态 
         /// </summary>
         public static string Status = "S";
+
+        /// <summary>
+        /// 位置
+        /// </summary>
+        public static string From = "F";
 
         /// <summary>
         ///日期时间 
