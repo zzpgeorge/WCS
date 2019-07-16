@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WCS_phase1.Models;
 using System.Data;
 using WCS_phase1.Functions;
+using System.Configuration;
 
 namespace WCS_phase1.Functions
 {
@@ -61,6 +62,29 @@ namespace WCS_phase1.Functions
         }
 
         /// <summary>
+        /// 获取行车目的库存点位
+        /// </summary>
+        /// <param name="loc"></param>
+        /// <returns></returns>
+        public String GetABCStockLoc(String loc)
+        {
+            try
+            {
+                String sql = String.Format(@"select distinct ABC_LOC_STOCK from WCS_CONFIG_LOC where WMS_LOC = '{0}'", loc);
+                DataTable dtloc = mySQL.SelectAll(sql);
+                if (tools.IsNoData(dtloc))
+                {
+                    return "";
+                }
+                return dtloc.Rows[0]["ABC_LOC_STOCK"].ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
         /// 获取摆渡车对接的固定辊台的设备编号
         /// </summary>
         /// <param name="arf"></param>
@@ -76,6 +100,31 @@ namespace WCS_phase1.Functions
                     return "";
                 }
                 return dtloc.Rows[0]["FRT_LOC"].ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 获取 COMMAND 内 ITEM 最后指定任务所用的设备
+        /// </summary>
+        /// <param name="wcs_no"></param>
+        /// <param name="item_id"></param>
+        /// <returns></returns>
+        public String GetItemDeviceLast(String wcs_no, String item_id)
+        {
+            try
+            {
+                String sql = String.Format(@"select DEVICE from WCS_TASK_ITEM where WCS_NO = '{0}' and ITEM_ID = '{1}' and (WCS_NO, ITEM_ID, CREATION_TIME) in 
+                                            (select WCS_NO, ITEM_ID, MAX(CREATION_TIME) from WCS_TASK_ITEM group by WCS_NO, ITEM_ID) order by CREATION_TIME", wcs_no, item_id);
+                DataTable dt = mySQL.SelectAll(sql);
+                if (tools.IsNoData(dt))
+                {
+                    return "";
+                }
+                return dt.Rows[0]["DEVICE"].ToString();
             }
             catch (Exception ex)
             {
@@ -158,6 +207,39 @@ namespace WCS_phase1.Functions
                     return "";
                 }
                 return dtstep.Rows[0]["STEP"].ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 获取运输车入库方向上优先目的位置值
+        /// </summary>
+        /// <param name="loc_front"></param>
+        /// <param name="loc_behind"></param>
+        /// <returns></returns>
+        public String GetLocByRgvToLoc(String loc_front, String loc_behind)
+        {
+            try
+            {
+                String loc = "NG";
+                // 不能都为0，即不能没有目的位置
+                if (Convert.ToInt32(loc_front) == 0 || Convert.ToInt32(loc_behind) == 0)
+                {
+                    return loc;
+                }
+                // 比较
+                if (Convert.ToInt32(loc_behind) >= Convert.ToInt32(loc_front))
+                {
+                    loc = loc_front;
+                }
+                else
+                {
+                    loc = loc_behind;
+                }
+                return loc;
             }
             catch (Exception ex)
             {

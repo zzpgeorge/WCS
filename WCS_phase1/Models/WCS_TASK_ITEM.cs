@@ -88,7 +88,7 @@ namespace WCS_phase1.Models
         public const String 请求执行 = "Q";
         public const String 任务中 = "W";
         public const String 失效 = "X";
-        public const String 交接 = "R";
+        public const String 交接中 = "R";
         public const String 出现异常 = "E";
         public const String 完成任务 = "Y";
     }
