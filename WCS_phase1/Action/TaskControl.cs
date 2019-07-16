@@ -319,7 +319,7 @@ namespace WCS_phase1.Action
                     case ItemId.行车放货:
                         #region 行车定位
                         // 未完成的任务目标点
-                        loc = site1 == "Y"?loc2:loc1;
+                        loc = site1 == "Y" ? loc2 : loc1;
                         // 行车到运输车对接取货点
                         String ABCloc = task.GetABCTrackLoc(loc); //获取对应行车位置
                         // 生成行车轨道定位任务
@@ -404,17 +404,62 @@ namespace WCS_phase1.Action
         /// </summary>
         public void Run_OutFollow()
         {
-            // 判断是否存在出库清单
-            // 判断是否存在满足入库条件的任务
-            // =>获取设备资讯
-            // =>判断是否存在空闲的摆渡车&固定辊台
-            // 查询运输车&行车最佳的出库清单
+            //生成出库清单号
+            String wcs_no1 = "O" + System.DateTime.Now.ToString("yyMMddHHmmss");
+            try
+            {
+                // 判断是否存在出库请求
+                int taskcount = mySQL.GetCount("wcs_task_info", "TASK_TYPE = '2' and SITE = 'N'");
+                if (taskcount == 0) //无则退出
+                {
+                    return;
+                }
 
-            // 生成行车库存定位任务
-            // 生成运输车对接行车任务
-            // 生成摆渡车对接运输车任务
+                // 判断当前是否存在执行中的任务
+                int commandcount = mySQL.GetCount("wcs_command_master", "STEP = '3'");
+                if (commandcount > 0) //有则退出
+                {
+                    return;
+                }
+
+                // 判断是否存在满足入库条件的任务
+                int incount = mySQL.GetCount("wcs_command_v", "TASK_TYPE = '1' and STEP = '2'");
+                if (incount > 0) //有则退出
+                {
+                    return;
+                }
+
+                // =>获取当前行车资讯
+                // =>生成WCS出库清单
+
+                // 生成2笔 COMMAND - 4托货物对应4笔TASK资讯
+                // 生成行车库存定位任务
+                String ABCloc = ""; //获取对应库存位置
+                task.CreateItem(wcs_no1, ItemId.行车库存定位, ABCloc);  //生成行车任务
+
+                // 生成运输车对接行车任务
+                String RGVloc = ""; //获取运输车对接行车位置
+                task.CreateItem(wcs_no1, ItemId.运输车定位, RGVloc);  //生成运输车任务
+
+                // 生成摆渡车对接运输车任务
+                task.CreateItem(wcs_no1, ItemId.摆渡车定位运输车对接, ConfigurationManager.AppSettings["StandbyAR"]);  //生成摆渡车任务
+
+                //更新WCS COMMAND状态——执行中
+                task.UpdateCommand(wcs_no1, CommandStep.执行中);
+                //更新WCS TASK状态——任务中
+                task.UpdateTaskByWCSNo(wcs_no1, TaskSite.任务中);
+            }
+            catch (Exception ex)
+            {
+                //初始化
+                task.DeleteCommand(wcs_no1);
+                task.UpdateTaskByWCSNo(wcs_no1, TaskSite.未执行);
+                task.DeleteItem(wcs_no1, "");
+                throw ex;
+            }
         }
         #endregion
+
 
         #region 分配设备
         /// <summary>
