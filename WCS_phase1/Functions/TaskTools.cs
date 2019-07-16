@@ -326,6 +326,11 @@ namespace WCS_phase1.Functions
             }
         }
 
+        public void CreateCommand(String wcs_no, String taskid_1, String taskid_2)
+        {
+
+        }
+
         /// <summary>
         /// 创建 ITEM 初始任务
         /// </summary>
@@ -366,6 +371,23 @@ namespace WCS_phase1.Functions
             catch (Exception ex)
             {
 
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 清除 WCS生成的 COMMAND 资讯 
+        /// </summary>
+        /// <param name="wcs_no"></param>
+        public void DeleteCommand(String wcs_no)
+        {
+            try
+            {
+                String sql = String.Format(@"delete from WCS_TASK_ITEM where WCS_NO = '{0}'", wcs_no);
+                mySQL.ExcuteSql(sql);
+            }
+            catch (Exception ex)
+            {
                 throw ex;
             }
         }
