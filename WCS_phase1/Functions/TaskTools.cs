@@ -15,6 +15,31 @@ namespace WCS_phase1.Functions
         MySQL mySQL = new MySQL();
         SimpleTools tools = new SimpleTools();
 
+        #region 位置点位
+
+        /// <summary>
+        /// 获取固定辊台所在设备作业区域
+        /// </summary>
+        /// <param name="frt"></param>
+        /// <returns></returns>
+        public String GetArea(String frt)
+        {
+            try
+            {
+                String sql = String.Format(@"select distinct AREA From wcs_config_device where DEVICE = '{0}'", frt);
+                DataTable dtloc = mySQL.SelectAll(sql);
+                if (tools.IsNoData(dtloc))
+                {
+                    return "";
+                }
+                return dtloc.Rows[0]["AREA"].ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         /// <summary>
         /// 获取摆渡车于目的固定辊台对接点位
         /// </summary>
@@ -85,6 +110,102 @@ namespace WCS_phase1.Functions
         }
 
         /// <summary>
+        /// 获取wms入库目标位置对应设备点位(运输车定位坐标)[id表示是哪个辊台]
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="loc"></param>
+        /// <returns></returns>
+        public String GetRGVLoc(int id, String loc)
+        {
+            try
+            {
+                String sql;
+                if (id == 1)    // 运输车辊台①[内]定位
+                {
+                    sql = String.Format(@"select distinct RGV_LOC_1 LOC from WCS_CONFIG_LOC where WMS_LOC = '{0}'", loc);
+                }
+                else if (id == 2)   // 运输车辊台②[外]定位
+                {
+                    sql = String.Format(@"select distinct RGV_LOC_2 LOC from WCS_CONFIG_LOC where WMS_LOC = '{0}'", loc);
+                }
+                else
+                {
+                    return "0";
+                }
+                DataTable dtloc = mySQL.SelectAll(sql);
+                if (tools.IsNoData(dtloc))
+                {
+                    return "0";
+                }
+                return dtloc.Rows[0]["LOC"].ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 获取运输车入库方向上优先目的位置值
+        /// </summary>
+        /// <param name="loc_front"></param>
+        /// <param name="loc_behind"></param>
+        /// <returns></returns>
+        public String GetLocByRgvToLoc(String loc_front, String loc_behind)
+        {
+            try
+            {
+                String loc = "NG";
+                // 不能都为0，即不能没有目的位置
+                if (Convert.ToInt32(loc_front) == 0 || Convert.ToInt32(loc_behind) == 0)
+                {
+                    return loc;
+                }
+                // 比较
+                if (Convert.ToInt32(loc_behind) >= Convert.ToInt32(loc_front))
+                {
+                    loc = loc_front;
+                }
+                else
+                {
+                    loc = loc_behind;
+                }
+                return loc;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        #endregion
+
+        #region 设备编号
+
+        /// <summary>
+        /// 获取清单号对应固定辊台设备
+        /// </summary>
+        /// <param name="wcs_no"></param>
+        /// <returns></returns>
+        public String GetFRTByWCSNo(String wcs_no)
+        {
+            try
+            {
+                String sql = String.Format(@"select FRT from wcs_command_master where WCS_NO = '{0}'", wcs_no);
+                DataTable dtloc = mySQL.SelectAll(sql);
+                if (tools.IsNoData(dtloc))
+                {
+                    return "";
+                }
+                return dtloc.Rows[0]["FRT"].ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
         /// 获取摆渡车对接的固定辊台的设备编号
         /// </summary>
         /// <param name="arf"></param>
@@ -133,21 +254,24 @@ namespace WCS_phase1.Functions
         }
 
         /// <summary>
-        /// 获取wms入库目标位置对应设备点位(行车放货库存坐标)
+        /// 获取指定区域及类型的可用设备List
         /// </summary>
-        /// <param name="wms_loc"></param>
+        /// <param name="area"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
-        public String GetLocForIn(String wms_loc)
+        public List<WCS_CONFIG_DEVICE> GetDeviceList(String area, String type)
         {
+            String sql;
             try
             {
-                String sql = String.Format(@"select ABC_LOC_STOCK from WCS_CONFIG_LOC where WMS_LOC = '{0}'", wms_loc);
-                DataTable dtloc = mySQL.SelectAll(sql);
-                if (tools.IsNoData(dtloc))
+                sql = String.Format(@"select * from wcs_config_device where FLAG = 'Y' and AREA = '{0}' and TYPE = '{1}'", area, type);
+                DataTable dt = mySQL.SelectAll(sql);
+                if (tools.IsNoData(dt))
                 {
-                    return "";
+                    return new List<WCS_CONFIG_DEVICE>();
                 }
-                return dtloc.Rows[0]["ABC_LOC_STOCK"].ToString();
+                List<WCS_CONFIG_DEVICE> List = dt.ToDataList<WCS_CONFIG_DEVICE>();
+                return List;
             }
             catch (Exception ex)
             {
@@ -155,41 +279,9 @@ namespace WCS_phase1.Functions
             }
         }
 
-        /// <summary>
-        /// 获取wms入库目标位置对应设备点位(运输车定位坐标)[id表示是哪个辊台]
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="loc"></param>
-        /// <returns></returns>
-        public String GetRGVLoc(int id, String loc)
-        {
-            try
-            {
-                String sql;
-                if (id == 1)    // 运输车辊台①[内]定位
-                {
-                    sql = String.Format(@"select distinct RGV_LOC_1 LOC from WCS_CONFIG_LOC where WMS_LOC = '{0}'", loc);
-                }
-                else if (id == 2)   // 运输车辊台②[外]定位
-                {
-                    sql = String.Format(@"select distinct RGV_LOC_2 LOC from WCS_CONFIG_LOC where WMS_LOC = '{0}'", loc);
-                }
-                else
-                {
-                    return "0";
-                }
-                DataTable dtloc = mySQL.SelectAll(sql);
-                if (tools.IsNoData(dtloc))
-                {
-                    return "0";
-                }
-                return dtloc.Rows[0]["LOC"].ToString();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+        #endregion
+
+        #region 任务清单
 
         /// <summary>
         /// 获取 COMMAND 状态
@@ -215,31 +307,23 @@ namespace WCS_phase1.Functions
         }
 
         /// <summary>
-        /// 获取运输车入库方向上优先目的位置值
+        /// 获取对应 item_id 属对接状态中的 Item List
         /// </summary>
-        /// <param name="loc_front"></param>
-        /// <param name="loc_behind"></param>
+        /// <param name="item_id"></param>
         /// <returns></returns>
-        public String GetLocByRgvToLoc(String loc_front, String loc_behind)
+        public List<WCS_TASK_ITEM> GetItemList_R(String item_id)
         {
+            String sql;
             try
             {
-                String loc = "NG";
-                // 不能都为0，即不能没有目的位置
-                if (Convert.ToInt32(loc_front) == 0 || Convert.ToInt32(loc_behind) == 0)
+                sql = String.Format(@"select * From WCS_TASK_ITEM where STATUS = 'R' and ITEM_ID = '{0}' order by CREATION_TIME", item_id);
+                DataTable dtitem = mySQL.SelectAll(sql);
+                if (tools.IsNoData(dtitem))
                 {
-                    return loc;
+                    return new List<WCS_TASK_ITEM>();
                 }
-                // 比较
-                if (Convert.ToInt32(loc_behind) >= Convert.ToInt32(loc_front))
-                {
-                    loc = loc_front;
-                }
-                else
-                {
-                    loc = loc_behind;
-                }
-                return loc;
+                List<WCS_TASK_ITEM> itemList = dtitem.ToDataList<WCS_TASK_ITEM>();
+                return itemList;
             }
             catch (Exception ex)
             {
@@ -324,11 +408,6 @@ namespace WCS_phase1.Functions
             {
                 throw ex;
             }
-        }
-
-        public void CreateCommand(String wcs_no, String taskid_1, String taskid_2)
-        {
-
         }
 
         /// <summary>
@@ -419,30 +498,7 @@ namespace WCS_phase1.Functions
             }
         }
 
-        /// <summary>
-        /// 获取对应 item_id 属对接状态中的 Item List
-        /// </summary>
-        /// <param name="item_id"></param>
-        /// <returns></returns>
-        public List<WCS_TASK_ITEM> GetItemList_R(String item_id)
-        {
-            String sql;
-            try
-            {
-                sql = String.Format(@"select * From WCS_TASK_ITEM where STATUS = 'R' and ITEM_ID = '{0}' order by CREATION_TIME", item_id);
-                DataTable dtitem = mySQL.SelectAll(sql);
-                if (tools.IsNoData(dtitem))
-                {
-                    return new List<WCS_TASK_ITEM>();
-                }
-                List<WCS_TASK_ITEM> itemList = dtitem.ToDataList<WCS_TASK_ITEM>();
-                return itemList;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+        #endregion
 
     }
 }

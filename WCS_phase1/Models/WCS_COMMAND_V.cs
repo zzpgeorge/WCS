@@ -42,9 +42,14 @@ namespace WCS_phase1.Models
         public String TASK_UID_1 { get; set; }
 
         /// <summary>
+        /// 来源位置1
+        /// </summary>
+        public String LOC_FROM_1 { get; set; }
+
+        /// <summary>
         /// 目的位置1
         /// </summary>
-        public String LOC_1 { get; set; }
+        public String LOC_TO_1 { get; set; }
 
         /// <summary>
         /// 任务状态1
@@ -57,9 +62,14 @@ namespace WCS_phase1.Models
         public String TASK_UID_2 { get; set; }
 
         /// <summary>
+        /// 来源位置2
+        /// </summary>
+        public String LOC_FROM_2 { get; set; }
+
+        /// <summary>
         /// 目的位置2
         /// </summary>
-        public String LOC_2 { get; set; }
+        public String LOC_TO_2 { get; set; }
 
         /// <summary>
         /// 任务状态2

@@ -28,6 +28,16 @@ namespace WCS_phase1.Models
         public String PORT { get; set; }
 
         /// <summary>
+        /// 区域
+        /// </summary>
+        public String AREA { get; set; }
+
+        /// <summary>
+        /// 备注说明
+        /// </summary>
+        public String REMARK { get; set; }
+
+        /// <summary>
         /// 设备状态
         /// </summary>
         public String FLAG { get; set; }
@@ -42,4 +52,16 @@ namespace WCS_phase1.Models
         /// </summary>
         public DateTime? UPDATE_TIME { get; set; }
     }
+
+    /// <summary>
+    /// 设备类型
+    /// </summary>
+    public class DeviceType
+    {
+        public const String 行车 = "ABC";
+        public const String 运输车 = "RGV";
+        public const String 摆渡车 = "ARF";
+        public const String 固定辊台 = "FRT";
+    }
+
 }
